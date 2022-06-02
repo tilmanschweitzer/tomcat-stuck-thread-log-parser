@@ -1,0 +1,23 @@
+{
+  "name": "tomcat-stuck-thread-log-parser",
+  "version": "1.0.0",
+  "description": "Parser for stuck threads in tomcat logs",
+  "main": "tstlp-worker-threads.mjs",
+  "scripts": {
+    "test": "jasmine **/*.spec.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tilmanschweitzer/100-days-of-code.git"
+  },
+  "author": "Tilman Schweitzer <tschweitzer@seibert-media.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tilmanschweitzer/100-days-of-code/issues"
+  },
+  "homepage": "https://github.com/tilmanschweitzer/100-days-of-code#readme",
+  "devDependencies": {
+    "jasmine": "^4.1.0",
+    "nyc": "^15.1.0"
+  }
+}
