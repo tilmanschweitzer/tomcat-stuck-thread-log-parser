@@ -6,35 +6,62 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 public class App {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         System.out.println(Arrays.stream(args).collect(Collectors.toList()));
 
-
         if (args.length < 1) {
-            throw new IllegalArgumentException("TODO");
+            throw new IllegalArgumentException("Missing argument folder");
         }
 
         final String folder = args[0];
         final String filterString = args.length > 1 ? args[1] : "";
 
-        runSync(folder, filterString);
+        runAsync(folder, filterString);
     }
 
-    public static void runSync(String folder, String filterString) throws IOException {
+    public static void runAsync(String folder, String filterString) throws IOException, ExecutionException, InterruptedException {
+        final int threads = Runtime.getRuntime().availableProcessors() - 1;
+        final ExecutorService executorService = Executors.newFixedThreadPool(threads);
+
         try (Stream<Path> paths = matchingFilesInFolder(folder, filterString)) {
-            paths.forEach((filename) -> {
+            final List<Future<Result>> collect = paths.map((filename) -> executorService.submit(() -> {
                 try {
                     final long countStuckThreads = countLinesWithString(Files.readAllLines(filename), "notifyStuckThreadDetected");
-                    System.out.println(filename + ":" + countStuckThreads);
+                    return new Result(filename.toString(), countStuckThreads);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException("Error counting stuck threads", e);
                 }
-            });
+            })).collect(Collectors.toList());
+
+            for (Future<Result> resultFuture : collect) {
+                printResult(resultFuture.get());
+            }
+
+            executorService.shutdown();
+        }
+    }
+
+    private static void printResult(Result result) {
+        System.out.println(result.filename + ":" + result.stuckThreads);
+    }
+
+    private static class Result {
+        private final String filename;
+        private final long stuckThreads;
+
+        private Result(String filename, long stuckThreads) {
+            this.filename = filename;
+            this.stuckThreads = stuckThreads;
         }
     }
 
