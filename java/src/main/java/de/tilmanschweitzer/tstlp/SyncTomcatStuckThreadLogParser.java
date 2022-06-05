@@ -11,7 +11,7 @@ public class SyncTomcatStuckThreadLogParser extends AbstractTomcatStuckThreadLog
         try (Stream<Path> paths = matchingFilesInFolder(folder, fileFilter)) {
             paths.forEach((filename) -> {
                 try {
-                    final long countStuckThreads = countLinesWithString(Files.readAllLines(filename), "notifyStuckThreadDetected");
+                    final long countStuckThreads = countLinesWithString(Files.readAllLines(filename), STUCK_THEAD_MARKER);
                     System.out.println(new StuckThreadsCounterResult(filename.toString(), countStuckThreads));
                 } catch (IOException e) {
                     e.printStackTrace();

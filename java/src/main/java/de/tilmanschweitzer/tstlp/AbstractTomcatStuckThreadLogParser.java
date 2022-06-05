@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 public class AbstractTomcatStuckThreadLogParser {
 
-    public static final String STUCK_THEAD_MARKER = "notifyStuckThreadDetected";
+    public static final String STUCK_THEAD_MARKER = "org.apache.catalina.valves.StuckThreadDetectionValve.notifyStuckThreadDetected";
 
     protected static Stream<Path> matchingFilesInFolder(String folder, String filterString) throws IOException {
         return Files.walk(Paths.get(folder))
