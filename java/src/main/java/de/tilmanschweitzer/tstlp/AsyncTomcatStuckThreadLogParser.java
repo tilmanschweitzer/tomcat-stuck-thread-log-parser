@@ -20,7 +20,7 @@ public class AsyncTomcatStuckThreadLogParser extends AbstractTomcatStuckThreadLo
         try (Stream<Path> paths = matchingFilesInFolder(folder, fileFilter)) {
             final List<Future<StuckThreadsCounterResult>> collect = paths.map((filename) -> executorService.submit(() -> {
                 try {
-                    final long countStuckThreads = countLinesWithString(Files.readAllLines(filename), STUCK_THEAD_MARKER);
+                    final long countStuckThreads = countLinesWithString(Files.readAllLines(filename), STUCK_THREAD_MARKER);
                     return new StuckThreadsCounterResult(filename.toString(), countStuckThreads);
                 } catch (IOException e) {
                     throw new RuntimeException("Error counting stuck threads", e);

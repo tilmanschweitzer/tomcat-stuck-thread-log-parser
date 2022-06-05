@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static de.tilmanschweitzer.tstlp.AbstractTomcatStuckThreadLogParser.STUCK_THEAD_MARKER;
+import static de.tilmanschweitzer.tstlp.AbstractTomcatStuckThreadLogParser.STUCK_THREAD_MARKER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AbstractTomcatStuckThreadLogParserTest {
@@ -26,7 +26,7 @@ class AbstractTomcatStuckThreadLogParserTest {
                 "..."
         );
 
-        assertEquals(1, AbstractTomcatStuckThreadLogParser.countLinesWithString(lines, STUCK_THEAD_MARKER));
+        assertEquals(1, AbstractTomcatStuckThreadLogParser.countLinesWithString(lines, STUCK_THREAD_MARKER));
     }
 
     @Test
