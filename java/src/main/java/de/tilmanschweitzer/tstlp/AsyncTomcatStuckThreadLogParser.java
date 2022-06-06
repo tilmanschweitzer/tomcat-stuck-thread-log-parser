@@ -1,5 +1,7 @@
 package de.tilmanschweitzer.tstlp;
 
+import de.tilmanschweitzer.tstlp.result.StuckThreadsAnalyzerResult;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

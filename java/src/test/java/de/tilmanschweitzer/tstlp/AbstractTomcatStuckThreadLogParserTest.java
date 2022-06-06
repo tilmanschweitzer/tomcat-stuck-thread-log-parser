@@ -1,5 +1,8 @@
 package de.tilmanschweitzer.tstlp;
 
+import de.tilmanschweitzer.tstlp.result.CodeLineByOccurrence;
+import de.tilmanschweitzer.tstlp.result.StuckThread;
+import de.tilmanschweitzer.tstlp.result.StuckThreadsAnalyzerResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +15,7 @@ import java.util.List;
 
 import static de.tilmanschweitzer.tstlp.AbstractTomcatStuckThreadLogParser.STUCK_THREAD_MARKER;
 import static java.lang.ClassLoader.getSystemResource;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AbstractTomcatStuckThreadLogParserTest {
@@ -56,8 +60,9 @@ class AbstractTomcatStuckThreadLogParserTest {
 
         assertEquals(filename, result.getFilename());
         assertEquals(1, result.getStuckThreadsCount());
+        assertEquals(4, result.uniqueCodeLinesCount());
 
-        final StuckThreadsAnalyzerResult.StuckThread firstStuckThread = result.getStuckThreads().get(0);
+        final StuckThread firstStuckThread = result.getStuckThreads().get(0);
 
         final List<String> expectedStackTrace = Arrays.asList(
                 "java.base@11.0.9.1/java.net.SocketInputStream.socketRead0(Native Method)",
@@ -66,16 +71,41 @@ class AbstractTomcatStuckThreadLogParserTest {
                 "java.base@11.0.9.1/java.net.SocketInputStream.read(SocketInputStream.java:140)"
         );
 
-        assertEquals(expectedStackTrace, firstStuckThread.getStackTrace());
+        assertEquals(expectedStackTrace, firstStuckThread.getStackTraceLines());
     }
 
     @Test
-    @DisplayName("analyze parses the stack trace of one stuck thread")
+    @DisplayName("analyze parses the stack trace of multiple stuck threads")
     void analyze_parsesMultipleStackTraces() {
-        final String filename = "tomcat-logs/catalina.2022-0606";
+        final String filename = "tomcat-logs/catalina.2022-06-06";
         final StuckThreadsAnalyzerResult result = AbstractTomcatStuckThreadLogParser.analyze(filename, stuckThreadExampleWithMultipleStuckThreads);
 
         assertEquals(10, result.getStuckThreadsCount());
+
+        final List<String> expectedTimestamps = Arrays.asList(
+                "26-May-2022 02:16:31.715",
+                "26-May-2022 11:24:26.625",
+                "26-May-2022 11:25:46.747",
+                "26-May-2022 13:21:44.669",
+                "26-May-2022 14:35:49.869",
+                "26-May-2022 22:01:00.696",
+                "26-May-2022 22:58:04.220",
+                "26-May-2022 22:58:04.221",
+                "26-May-2022 23:23:25.797",
+                "26-May-2022 23:23:25.798"
+        );
+
+        assertEquals(expectedTimestamps, result.getStuckThreads().stream().map(StuckThread::getTimestamp).collect(toList()));
+
+        final CodeLineByOccurrence codeLineWithMostOccurrences = result.getCodeLineByOccurrence(0).get();
+        assertEquals(414, codeLineWithMostOccurrences.getCount());
+        assertEquals("org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", codeLineWithMostOccurrences.getLine());
+
+
+        final CodeLineByOccurrence meaningfulCodeLineWithMostOccurrences = result.getMeaningfulCodeLineByOccurrence(0).get();
+        assertEquals(9, meaningfulCodeLineWithMostOccurrences.getCount());
+        assertEquals("java.base@11.0.14.1/java.net.SocketInputStream.socketRead0(Native Method)", meaningfulCodeLineWithMostOccurrences.getLine());
+
     }
 
     static List<String> linesFromTomcatLogExamplesFile(final String filename) {
