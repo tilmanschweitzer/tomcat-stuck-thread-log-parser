@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AbstractTomcatStuckThreadLogParserTest {
 
     public static final List<String> stuckThreadExampleWithOneStuckThread = linesFromTomcatLogExamplesFile("example-with-one-stuck-thread.log");
+    public static final List<String> stuckThreadExampleWithMultipleStuckThreads = linesFromTomcatLogExamplesFile("example-with-multiple-stuck-threads.log");
 
     @Test
     @DisplayName("countLinesWithString find one stuck thread in a realistic log example")
@@ -66,6 +67,15 @@ class AbstractTomcatStuckThreadLogParserTest {
         );
 
         assertEquals(expectedStackTrace, firstStuckThread.getStackTrace());
+    }
+
+    @Test
+    @DisplayName("analyze parses the stack trace of one stuck thread")
+    void analyze_parsesMultipleStackTraces() {
+        final String filename = "tomcat-logs/catalina.2022-0606";
+        final StuckThreadsAnalyzerResult result = AbstractTomcatStuckThreadLogParser.analyze(filename, stuckThreadExampleWithMultipleStuckThreads);
+
+        assertEquals(10, result.getStuckThreadsCount());
     }
 
     static List<String> linesFromTomcatLogExamplesFile(final String filename) {
