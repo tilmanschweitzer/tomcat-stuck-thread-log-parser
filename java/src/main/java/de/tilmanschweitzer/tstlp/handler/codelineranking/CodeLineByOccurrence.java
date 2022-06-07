@@ -1,4 +1,4 @@
-package de.tilmanschweitzer.tstlp.result;
+package de.tilmanschweitzer.tstlp.handler.codelineranking;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,17 +35,15 @@ public class CodeLineByOccurrence implements Comparable<CodeLineByOccurrence> {
             "com.sun.jersey",
             "org.springframework.aop.framework"
     );
-
-    public static boolean ignoreCodeLine(String line) {
-        return ignoredFilterPackages.stream().anyMatch(line::startsWith) || ignoredMethodNames.stream().map(methodName -> "." + methodName + "(").anyMatch(line::contains);
-    }
-
     private final String line;
-
     private final List<CodeLine> codeLines = new ArrayList<>();
 
     public CodeLineByOccurrence(String line) {
         this.line = line;
+    }
+
+    public static boolean ignoreCodeLine(String line) {
+        return ignoredFilterPackages.stream().anyMatch(line::startsWith) || ignoredMethodNames.stream().map(methodName -> "." + methodName + "(").anyMatch(line::contains);
     }
 
     public String getLine() {

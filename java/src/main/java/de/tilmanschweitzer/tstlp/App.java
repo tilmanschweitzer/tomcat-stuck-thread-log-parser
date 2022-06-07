@@ -1,5 +1,11 @@
 package de.tilmanschweitzer.tstlp;
 
+import de.tilmanschweitzer.tstlp.handler.codelineranking.CodeLineRankingStuckThreadHandler;
+import de.tilmanschweitzer.tstlp.handler.counting.CountingStuckThreadHandler;
+import de.tilmanschweitzer.tstlp.parser.AsyncTomcatLogFolderParser;
+import de.tilmanschweitzer.tstlp.parser.SyncTomcatLogFolderParser;
+import de.tilmanschweitzer.tstlp.parser.TomcatLogFolderParser;
+
 import java.io.IOException;
 
 public class App {
@@ -7,14 +13,19 @@ public class App {
     public static void main(String[] args) throws IOException {
         final Arguments arguments = Arguments.parseArguments(args);
 
-        final TomcatStuckThreadLogParser tomcatStuckThreadLogParser;
-
+        final TomcatLogFolderParser tomcatLogFolderParser;
         if (arguments.isRunAsync()) {
-            tomcatStuckThreadLogParser = new AsyncTomcatStuckThreadLogParser();
+            tomcatLogFolderParser = new AsyncTomcatLogFolderParser();
         } else {
-            tomcatStuckThreadLogParser = new SyncTomcatStuckThreadLogParser();
+            tomcatLogFolderParser = new SyncTomcatLogFolderParser();
         }
 
-        tomcatStuckThreadLogParser.parse(arguments.getFolder(), arguments.getFileFilter());
+        if (arguments.analyseCodeLineOccurrences()) {
+            tomcatLogFolderParser.addStuckThreadHandler(new CodeLineRankingStuckThreadHandler());
+        } else {
+            tomcatLogFolderParser.addStuckThreadHandler(new CountingStuckThreadHandler());
+        }
+
+        tomcatLogFolderParser.parseFolder(arguments.getFolder(), arguments.getFileFilter());
     }
 }

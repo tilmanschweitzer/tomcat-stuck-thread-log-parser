@@ -1,4 +1,4 @@
-package de.tilmanschweitzer.tstlp.result;
+package de.tilmanschweitzer.tstlp.handler.codelineranking;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +12,15 @@ public class StuckThread {
 
     public StuckThread(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    private static String normalizedLine(String line) {
+        final String trimmedLine = line.trim();
+        if (trimmedLine.startsWith("at ")) {
+            return trimmedLine.replaceFirst("at ", "");
+        }
+        // ignore all other lines
+        return "";
     }
 
     public List<CodeLine> getStackTrace() {
@@ -34,15 +43,5 @@ public class StuckThread {
         final CodeLine newCodeLine = new CodeLine(normalizedLine, stackTrace.size(), this);
         stackTrace.add(newCodeLine);
         return Optional.of(newCodeLine);
-
-    }
-
-    private static String normalizedLine(String line) {
-        final String trimmedLine = line.trim();
-        if (trimmedLine.startsWith("at ")) {
-            return trimmedLine.replaceFirst("at ", "");
-        }
-        // ignore all other lines
-        return "";
     }
 }

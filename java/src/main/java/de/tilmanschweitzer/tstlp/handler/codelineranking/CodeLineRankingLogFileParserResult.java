@@ -1,18 +1,20 @@
-package de.tilmanschweitzer.tstlp.result;
+package de.tilmanschweitzer.tstlp.handler.codelineranking;
+
+import de.tilmanschweitzer.tstlp.handler.LogFileParserResult;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static de.tilmanschweitzer.tstlp.result.CodeLineByOccurrence.ignoreCodeLine;
+import static de.tilmanschweitzer.tstlp.handler.codelineranking.CodeLineByOccurrence.ignoreCodeLine;
 
-public class StuckThreadsAnalyzerResult {
+public class CodeLineRankingLogFileParserResult implements LogFileParserResult {
 
+    final Map<String, CodeLineByOccurrence> codeLineByOccurrencesMap = new HashMap<>();
     private final String filename;
     private final List<StuckThread> stuckThreads = new ArrayList<>();
-    final Map<String, CodeLineByOccurrence> codeLineByOccurrencesMap = new HashMap<>();
 
-    public StuckThreadsAnalyzerResult(String filename) {
+    public CodeLineRankingLogFileParserResult(String filename) {
         this.filename = filename;
     }
 
@@ -30,13 +32,6 @@ public class StuckThreadsAnalyzerResult {
 
     public List<StuckThread> getStuckThreads() {
         return Collections.unmodifiableList(stuckThreads);
-    }
-
-    @Override
-    public String toString() {
-        final Optional<CodeLineByOccurrence> mostOftenCodeLine = getMeaningfulCodeLineByOccurrence(0);
-        final String codeLineAppend = mostOftenCodeLine.map((codeLine) -> " (" + codeLine + ")").orElse("");
-        return filename + ":" + getStuckThreadsCount() + codeLineAppend;
     }
 
     public int uniqueCodeLinesCount() {
@@ -69,7 +64,7 @@ public class StuckThreadsAnalyzerResult {
         return getCodeLineByOccurrence(index, (line) -> true);
     }
 
-    public Optional<CodeLineByOccurrence> getCodeLineByOccurrence(int index,  Predicate<CodeLineByOccurrence> predicate) {
+    public Optional<CodeLineByOccurrence> getCodeLineByOccurrence(int index, Predicate<CodeLineByOccurrence> predicate) {
         final List<CodeLineByOccurrence> collect = codeLineByOccurrencesMap.values()
                 .stream()
                 .filter(predicate)
@@ -80,5 +75,12 @@ public class StuckThreadsAnalyzerResult {
             return Optional.empty();
         }
         return Optional.of(collect.get(index));
+    }
+
+    @Override
+    public String getPrintableResult() {
+        final Optional<CodeLineByOccurrence> mostOftenCodeLine = getMeaningfulCodeLineByOccurrence(0);
+        final String codeLineAppend = mostOftenCodeLine.map((codeLine) -> " (" + codeLine + ")").orElse("");
+        return filename + ":" + getStuckThreadsCount() + codeLineAppend;
     }
 }

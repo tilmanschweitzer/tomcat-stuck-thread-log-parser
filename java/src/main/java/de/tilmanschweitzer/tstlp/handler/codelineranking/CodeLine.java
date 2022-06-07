@@ -1,4 +1,4 @@
-package de.tilmanschweitzer.tstlp.result;
+package de.tilmanschweitzer.tstlp.handler.codelineranking;
 
 public class CodeLine {
     final String line;
