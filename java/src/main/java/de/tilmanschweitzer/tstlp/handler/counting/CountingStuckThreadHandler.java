@@ -2,8 +2,9 @@ package de.tilmanschweitzer.tstlp.handler.counting;
 
 import de.tilmanschweitzer.tstlp.handler.LogFileParserResult;
 import de.tilmanschweitzer.tstlp.handler.StuckThreadHandler;
+import de.tilmanschweitzer.tstlp.handler.StuckThreadHandlerAdapter;
 
-public class CountingStuckThreadHandler implements StuckThreadHandler {
+public class CountingStuckThreadHandler extends StuckThreadHandlerAdapter implements StuckThreadHandler {
 
     private String filename;
     private int stuckThreadsCounter;
@@ -16,17 +17,7 @@ public class CountingStuckThreadHandler implements StuckThreadHandler {
 
     @Override
     public void startStuckThread(String line) {
-        this.stuckThreadsCounter++;
-    }
-
-    @Override
-    public void lineInStuckThread(String line) {
-        // Ignore
-    }
-
-    @Override
-    public void endStuckThread() {
-        // Ignore
+        stuckThreadsCounter++;
     }
 
     @Override

@@ -7,16 +7,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public abstract class AbstractTomcatLogFolderParser implements TomcatLogFolderParser {
 
     public static final String STUCK_THREAD_MARKER = "org.apache.catalina.valves.StuckThreadDetectionValve.notifyStuckThreadDetected";
 
-    private final List<StuckThreadHandler> stuckThreadHandlers = new ArrayList<>();
+    private final Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers;
+
+    public AbstractTomcatLogFolderParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers) {
+        this.stuckThreadHandlerSuppliers = stuckThreadHandlerSuppliers;
+    }
 
     protected static Stream<Path> matchingFilesInFolder(String folder, String filterString) throws IOException {
         return Files.walk(Paths.get(folder))
@@ -31,53 +34,32 @@ public abstract class AbstractTomcatLogFolderParser implements TomcatLogFolderPa
                 .count();
     }
 
-    public List<LogFileParserResult> parseFile(String fileName, List<String> lines) {
-        startLogFile(fileName);
+    public LogFileParserResult parseFile(String fileName, List<String> lines) {
+        final StuckThreadHandler stuckThreadHandlers = stuckThreadHandlerSuppliers.get();
+
+        stuckThreadHandlers.startLogFile(fileName);
 
         boolean inStuckThread = false;
 
         for (String line : lines) {
             if (line.contains(STUCK_THREAD_MARKER)) {
                 if (inStuckThread) {
-                    endStuckThread();
+                    stuckThreadHandlers.endStuckThread();
                 }
 
-                startStuckThread(line);
+                stuckThreadHandlers.startStuckThread(line);
                 inStuckThread = true;
             } else if (inStuckThread) {
                 if (line.startsWith(" ") || line.startsWith("\t")) {
-                    lineInStuckThread(line);
+                    stuckThreadHandlers.lineInStuckThread(line);
                 } else {
                     inStuckThread = false;
-                    endStuckThread();
+                    stuckThreadHandlers.endStuckThread();
                 }
             }
         }
 
-        return endLogFile();
+        return stuckThreadHandlers.getResult();
     }
 
-    private void startLogFile(String filename) {
-        stuckThreadHandlers.forEach(stuckThreadHandler -> stuckThreadHandler.startLogFile(filename));
-    }
-
-    public void addStuckThreadHandler(StuckThreadHandler stuckThreadHandler) {
-        stuckThreadHandlers.add(stuckThreadHandler);
-    }
-
-    private void startStuckThread(String line) {
-        stuckThreadHandlers.forEach(stuckThreadHandler -> stuckThreadHandler.startStuckThread(line));
-    }
-
-    private void lineInStuckThread(String line) {
-        stuckThreadHandlers.forEach(stuckThreadHandler -> stuckThreadHandler.lineInStuckThread(line));
-    }
-
-    private void endStuckThread() {
-        stuckThreadHandlers.forEach(StuckThreadHandler::endStuckThread);
-    }
-
-    private List<LogFileParserResult> endLogFile() {
-        return stuckThreadHandlers.stream().map(stuckThreadHandlers -> stuckThreadHandlers.getResult()).collect(Collectors.toUnmodifiableList());
-    }
 }

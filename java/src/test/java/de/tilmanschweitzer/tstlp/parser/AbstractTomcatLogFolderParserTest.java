@@ -1,5 +1,6 @@
 package de.tilmanschweitzer.tstlp.parser;
 
+import de.tilmanschweitzer.tstlp.handler.codelineranking.CodeLineRankingStuckThreadHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class AbstractTomcatLogFolderParserTest {
 
     @BeforeEach
     void setUp() {
-        abstractTomcatLogFolderParser = new DummyTomcatLogFolderParser();
+        abstractTomcatLogFolderParser = new DummyTomcatLogFolderParser(CodeLineRankingStuckThreadHandler::new);
     }
 
     @Test
