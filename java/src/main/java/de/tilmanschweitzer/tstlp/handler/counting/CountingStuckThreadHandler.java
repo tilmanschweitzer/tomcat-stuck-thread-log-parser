@@ -22,6 +22,10 @@ public class CountingStuckThreadHandler extends StuckThreadHandlerAdapter implem
 
     @Override
     public LogFileParserResult getResult() {
+        return getCountingResult();
+    }
+
+    public CountingLogFileParserResult getCountingResult() {
         return new CountingLogFileParserResult(filename, stuckThreadsCounter);
     }
 }

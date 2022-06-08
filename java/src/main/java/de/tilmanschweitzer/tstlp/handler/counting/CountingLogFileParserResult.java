@@ -12,6 +12,14 @@ public class CountingLogFileParserResult implements LogFileParserResult {
         this.stuckThreadsCount = stuckThreadsCount;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
+    public int getStuckThreadsCount() {
+        return stuckThreadsCount;
+    }
+
     @Override
     public String getPrintableResult() {
         return filename + ":" + stuckThreadsCount;

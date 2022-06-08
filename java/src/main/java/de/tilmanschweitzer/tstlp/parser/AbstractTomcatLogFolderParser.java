@@ -28,12 +28,6 @@ public abstract class AbstractTomcatLogFolderParser implements TomcatLogFolderPa
                 .sorted();
     }
 
-    protected static long countLinesWithString(List<String> lines, String searchString) {
-        return lines.stream()
-                .filter(line -> line.contains(searchString))
-                .count();
-    }
-
     public LogFileParserResult parseFile(String fileName, List<String> lines) {
         final StuckThreadHandler stuckThreadHandlers = stuckThreadHandlerSuppliers.get();
 
@@ -43,6 +37,7 @@ public abstract class AbstractTomcatLogFolderParser implements TomcatLogFolderPa
 
         for (String line : lines) {
             if (line.contains(STUCK_THREAD_MARKER)) {
+                // End stuck threads that directly follows a previous stuck thread
                 if (inStuckThread) {
                     stuckThreadHandlers.endStuckThread();
                 }
@@ -57,6 +52,11 @@ public abstract class AbstractTomcatLogFolderParser implements TomcatLogFolderPa
                     stuckThreadHandlers.endStuckThread();
                 }
             }
+        }
+
+        // Edge-case where two following stuck threads have no stack trace
+        if (inStuckThread) {
+            stuckThreadHandlers.endStuckThread();
         }
 
         return stuckThreadHandlers.getResult();
