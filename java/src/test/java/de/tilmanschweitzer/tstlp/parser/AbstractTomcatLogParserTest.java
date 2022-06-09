@@ -1,6 +1,9 @@
 package de.tilmanschweitzer.tstlp.parser;
 
 import de.tilmanschweitzer.tstlp.handler.StuckThreadHandler;
+import de.tilmanschweitzer.tstlp.mock.DummyTomcatLogFile;
+import de.tilmanschweitzer.tstlp.mock.DummyTomcatLogParser;
+import de.tilmanschweitzer.tstlp.parser.logfile.TomcatLogFile;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AbstractTomcatLogFolderParserTest {
+class AbstractTomcatLogParserTest {
 
     public static final List<String> stuckThreadExampleWithOneStuckThread = linesFromTomcatLogExamplesFile("example-with-one-stuck-thread.log");
     public static final List<String> stuckThreadExampleWithMultipleStuckThreads = linesFromTomcatLogExamplesFile("example-with-multiple-stuck-threads.log");
@@ -31,11 +34,11 @@ class AbstractTomcatLogFolderParserTest {
     @Captor
     ArgumentCaptor<String> stringArgumentCaptor;
 
-    private TomcatLogFolderParser abstractTomcatLogFolderParser;
+    private TomcatLogParser abstractTomcatLogFolderParser;
 
     @BeforeEach
     void beforeEach() {
-        abstractTomcatLogFolderParser = new DummyTomcatLogFolderParser(() -> stuckThreadHandler);
+        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> stuckThreadHandler);
     }
 
     @AfterEach
@@ -48,8 +51,9 @@ class AbstractTomcatLogFolderParserTest {
     void parseFile_parsesTheFilenameForAnEmptyLogFile() {
         final List<String> logLines = Collections.singletonList("");
         final String filename = "test-file.log";
+        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, logLines);
 
-        abstractTomcatLogFolderParser.parseFile(filename, logLines);
+        abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
         verify(stuckThreadHandler).startLogFile(filename);
         verify(stuckThreadHandler).getResult();
@@ -59,13 +63,14 @@ class AbstractTomcatLogFolderParserTest {
     @Test
     @DisplayName("parseFile detects one isolated stuck thread")
     void parseFile_detectsOneIsolatedStuckThread() {
-        final List<String> logLines = Collections.singletonList(AbstractTomcatLogFolderParser.STUCK_THREAD_MARKER);
+        final List<String> logLines = Collections.singletonList(AbstractTomcatLogParser.STUCK_THREAD_MARKER);
         final String filename = "test-file.log";
+        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, logLines);
 
-        abstractTomcatLogFolderParser.parseFile(filename, logLines);
+        abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
         verify(stuckThreadHandler).startLogFile(filename);
-        verify(stuckThreadHandler).startStuckThread(AbstractTomcatLogFolderParser.STUCK_THREAD_MARKER);
+        verify(stuckThreadHandler).startStuckThread(AbstractTomcatLogParser.STUCK_THREAD_MARKER);
         verify(stuckThreadHandler).endStuckThread();
         verify(stuckThreadHandler).getResult();
     }
@@ -73,13 +78,14 @@ class AbstractTomcatLogFolderParserTest {
     @Test
     @DisplayName("parseFile detects two isolated stuck threads ")
     void parseFile_detectsTwiIsolatedStuckThreads() {
-        final List<String> logLines = Arrays.asList(AbstractTomcatLogFolderParser.STUCK_THREAD_MARKER, AbstractTomcatLogFolderParser.STUCK_THREAD_MARKER);
+        final List<String> logLines = Arrays.asList(AbstractTomcatLogParser.STUCK_THREAD_MARKER, AbstractTomcatLogParser.STUCK_THREAD_MARKER);
         final String filename = "test-file.log";
+        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, logLines);
 
-        abstractTomcatLogFolderParser.parseFile(filename, logLines);
+        abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
         verify(stuckThreadHandler).startLogFile(filename);
-        verify(stuckThreadHandler, times(2)).startStuckThread(AbstractTomcatLogFolderParser.STUCK_THREAD_MARKER);
+        verify(stuckThreadHandler, times(2)).startStuckThread(AbstractTomcatLogParser.STUCK_THREAD_MARKER);
         verify(stuckThreadHandler, times(2)).endStuckThread();
         verify(stuckThreadHandler).getResult();
     }
@@ -89,8 +95,9 @@ class AbstractTomcatLogFolderParserTest {
     @DisplayName("parseFile detects one stuck thread in realistic log example including its stack trace")
     void parseFile_detectsOneStuckThreadInRealisticLogExample() {
         final String filename = "test-file.log";
+        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, stuckThreadExampleWithOneStuckThread);
 
-        abstractTomcatLogFolderParser.parseFile(filename, stuckThreadExampleWithOneStuckThread);
+        abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
         verify(stuckThreadHandler).startLogFile(filename);
         verify(stuckThreadHandler, times(1)).startStuckThread("06-Dec-2021 10:04:19.911 WARNING [Catalina-utility-1] org.apache.catalina.valves.StuckThreadDetectionValve.notifyStuckThreadDetected Thread [http-nio-8090-exec-626] (id=[106039]) has been active for [60,495] milliseconds (since [12/6/21 10:03 AM]) to serve the same request for [https://confluence.example.com/display/SPACEKEY/Page+title?src=contextnavpagetreemode] and may be stuck (configured threshold for this StuckThreadDetectionValve is [60] seconds). There is/are [2] thread(s) in total that are monitored by this Valve and may be stuck.");
@@ -113,8 +120,9 @@ class AbstractTomcatLogFolderParserTest {
     @DisplayName("parseFile detects multiple stuck thread in realistic log example")
     void parseFile_detectsMutipleStuckThreadsInRealisticLogExample() {
         final String filename = "test-file.log";
+        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, stuckThreadExampleWithMultipleStuckThreads);
 
-        abstractTomcatLogFolderParser.parseFile(filename, stuckThreadExampleWithMultipleStuckThreads);
+        abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
         verify(stuckThreadHandler).startLogFile(filename);
         verify(stuckThreadHandler, times(10)).startStuckThread(stringArgumentCaptor.capture());

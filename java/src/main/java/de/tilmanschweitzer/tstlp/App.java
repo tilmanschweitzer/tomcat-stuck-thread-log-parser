@@ -3,11 +3,15 @@ package de.tilmanschweitzer.tstlp;
 import de.tilmanschweitzer.tstlp.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.handler.codelineranking.CodeLineRankingStuckThreadHandler;
 import de.tilmanschweitzer.tstlp.handler.counting.CountingStuckThreadHandler;
-import de.tilmanschweitzer.tstlp.parser.AsyncTomcatLogFolderParser;
-import de.tilmanschweitzer.tstlp.parser.SyncTomcatLogFolderParser;
-import de.tilmanschweitzer.tstlp.parser.TomcatLogFolderParser;
+import de.tilmanschweitzer.tstlp.parser.AsyncTomcatLogParser;
+import de.tilmanschweitzer.tstlp.parser.SyncTomcatLogParser;
+import de.tilmanschweitzer.tstlp.parser.TomcatLogParser;
+import de.tilmanschweitzer.tstlp.parser.logfile.DefaultTomcatLogfileProvider;
+import de.tilmanschweitzer.tstlp.parser.logfile.TomcatLogFile;
+import de.tilmanschweitzer.tstlp.parser.logfile.TomcatLogFileProvider;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class App {
@@ -23,13 +27,16 @@ public class App {
             stuckThreadHandlerSupplier = CountingStuckThreadHandler::new;
         }
 
-        final TomcatLogFolderParser tomcatLogFolderParser;
+        final TomcatLogParser tomcatLogFolderParser;
         if (arguments.isRunAsync()) {
-            tomcatLogFolderParser = new AsyncTomcatLogFolderParser(stuckThreadHandlerSupplier);
+            tomcatLogFolderParser = new AsyncTomcatLogParser(stuckThreadHandlerSupplier);
         } else {
-            tomcatLogFolderParser = new SyncTomcatLogFolderParser(stuckThreadHandlerSupplier);
+            tomcatLogFolderParser = new SyncTomcatLogParser(stuckThreadHandlerSupplier);
         }
 
-        tomcatLogFolderParser.parseFolder(arguments.getFolder(), arguments.getFileFilter());
+        final Predicate<TomcatLogFile> filterPredicate = (tomcatLogFile -> tomcatLogFile.getFilename().contains(arguments.getFileFilter()));
+        final TomcatLogFileProvider tomcatLogFileProvider = new DefaultTomcatLogfileProvider(arguments.getFolder(), filterPredicate);
+
+        tomcatLogFolderParser.parse(tomcatLogFileProvider);
     }
 }

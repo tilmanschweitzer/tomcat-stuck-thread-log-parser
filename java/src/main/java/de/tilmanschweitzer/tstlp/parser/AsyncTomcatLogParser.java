@@ -2,10 +2,9 @@ package de.tilmanschweitzer.tstlp.parser;
 
 import de.tilmanschweitzer.tstlp.handler.LogFileParserResult;
 import de.tilmanschweitzer.tstlp.handler.StuckThreadHandler;
+import de.tilmanschweitzer.tstlp.parser.logfile.TomcatLogFile;
+import de.tilmanschweitzer.tstlp.parser.logfile.TomcatLogFileProvider;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -15,25 +14,24 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AsyncTomcatLogFolderParser extends AbstractTomcatLogFolderParser implements TomcatLogFolderParser {
+public class AsyncTomcatLogParser extends AbstractTomcatLogParser implements TomcatLogParser {
 
-    public AsyncTomcatLogFolderParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers) {
+    public AsyncTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers) {
         super(stuckThreadHandlerSuppliers);
     }
 
     @Override
-    public void parseFolder(String folder, String fileFilter) throws IOException {
+    public void parse(TomcatLogFileProvider provider) {
         final int threads = Runtime.getRuntime().availableProcessors() - 1;
         final ExecutorService executorService = Executors.newFixedThreadPool(threads);
 
-        try (Stream<Path> paths = matchingFilesInFolder(folder, fileFilter)) {
-            final List<Future<LogFileParserResult>> collect = paths.map((filename) -> executorService.submit(() -> {
-                try {
-                    return parseFile(filename.toString(), Files.readAllLines(filename));
-                } catch (IOException e) {
-                    throw new RuntimeException("Error counting stuck threads", e);
-                }
-            })).collect(Collectors.toList());
+        try (Stream<TomcatLogFile> tomcatLogfiles = provider.provideLogFiles()) {
+            final List<Future<LogFileParserResult>> collect = tomcatLogfiles
+                    .map((tomcatLogFile) -> {
+                        return executorService.submit(() -> {
+                            return parseFile(tomcatLogFile);
+                        });
+                    }).collect(Collectors.toList());
 
             for (Future<LogFileParserResult> resultFuture : collect) {
                 System.out.println(resultFuture.get().getPrintableResult());
