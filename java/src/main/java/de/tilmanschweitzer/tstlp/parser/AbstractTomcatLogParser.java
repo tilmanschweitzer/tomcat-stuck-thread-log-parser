@@ -4,12 +4,7 @@ import de.tilmanschweitzer.tstlp.handler.LogFileParserResult;
 import de.tilmanschweitzer.tstlp.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.parser.logfile.TomcatLogFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public abstract class AbstractTomcatLogParser implements TomcatLogParser {
 
@@ -19,13 +14,6 @@ public abstract class AbstractTomcatLogParser implements TomcatLogParser {
 
     public AbstractTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers) {
         this.stuckThreadHandlerSuppliers = stuckThreadHandlerSuppliers;
-    }
-
-    protected static Stream<Path> matchingFilesInFolder(String folder, String filterString) throws IOException {
-        return Files.walk(Paths.get(folder))
-                .filter(Files::isRegularFile)
-                .filter(path -> path.toString().contains(filterString))
-                .sorted();
     }
 
     public LogFileParserResult parseFile(TomcatLogFile tomcatLogFile) {
