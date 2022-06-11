@@ -1,11 +1,10 @@
 package de.tilmanschweitzer.tstlp.handler.codelineranking;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CodeLineByOccurrence implements Comparable<CodeLineByOccurrence> {
+
+    private static double WEIGHT_FACTOR_FOR_COUNT = 10000.0;
 
     public static final List<String> ignoredMethodNames = Arrays.asList(
             "doFilter",
@@ -70,9 +69,21 @@ public class CodeLineByOccurrence implements Comparable<CodeLineByOccurrence> {
         return getCount() + "x " + line;
     }
 
+    public double getWeight() {
+        return getCount() * WEIGHT_FACTOR_FOR_COUNT / getAverageLineNumber();
+    }
+
+    public int getAverageLineNumber() {
+        return getCodeLines().stream().map(CodeLine::getLineNumberInStuckThread).reduce(Integer::sum).orElseGet(() -> 0) / getCodeLines().size();
+    }
+
     @Override
     public int compareTo(CodeLineByOccurrence o) {
         // Order from often to rare occurrences
         return o.getCount() - getCount();
+    }
+
+    public int compareToByWeight(CodeLineByOccurrence o) {
+        return (int) (o.getWeight() - getWeight());
     }
 }

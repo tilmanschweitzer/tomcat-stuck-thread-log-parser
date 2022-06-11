@@ -14,4 +14,8 @@ public class CodeLine {
     public String getLine() {
         return line;
     }
+
+    public int getLineNumberInStuckThread() {
+        return lineNumberInStuckThread;
+    }
 }

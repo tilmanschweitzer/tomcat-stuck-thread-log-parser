@@ -50,37 +50,48 @@ public class CodeLineRankingLogFileParserResult implements LogFileParserResult {
         codeLineByOccurrence.addCodeLine(codeLine);
     }
 
-    public Optional<CodeLineByOccurrence> getMeaningfulCodeLineByOccurrence(int index) {
-        return getCodeLineByOccurrence(index, (line) -> {
-            // ignore lines that occur more often than all stuck threads
-            if (line.getCount() > getStuckThreadsCount()) {
-                return false;
-            }
-            return !ignoreCodeLine(line.getLine());
-        });
+    public List<CodeLineByOccurrence> getMeaningfulCodeLineByOccurrences(int limit) {
+        return getCodeLineBy(this::filterAmbiguousAndIgnoredCodeLines, CodeLineByOccurrence::compareTo, limit);
     }
 
-    public Optional<CodeLineByOccurrence> getCodeLineByOccurrence(int index) {
-        return getCodeLineByOccurrence(index, (line) -> true);
+    public boolean filterAmbiguousAndIgnoredCodeLines(CodeLineByOccurrence line) {
+        // ignore lines that occur more often than all stuck threads
+        if (line.getCount() > getStuckThreadsCount()) {
+            return false;
+        }
+        return !ignoreCodeLine(line.getLine());
     }
 
-    public Optional<CodeLineByOccurrence> getCodeLineByOccurrence(int index, Predicate<CodeLineByOccurrence> predicate) {
-        final List<CodeLineByOccurrence> collect = codeLineByOccurrencesMap.values()
+    public List<CodeLineByOccurrence> getCodeLineBy(final int limit) {
+        return getCodeLineBy(codeLineByOccurrence -> true, CodeLineByOccurrence::compareTo, limit);
+    }
+
+
+    public List<CodeLineByOccurrence> getCodeLineBy(
+            final Predicate<CodeLineByOccurrence> predicate,
+            final Comparator<? super CodeLineByOccurrence> comparator,
+            final int limit
+    ) {
+        return codeLineByOccurrencesMap.values()
                 .stream()
                 .filter(predicate)
-                .sorted()
+                .sorted(comparator)
+                .limit(limit)
                 .collect(Collectors.toUnmodifiableList());
-
-        if (index >= collect.size()) {
-            return Optional.empty();
-        }
-        return Optional.of(collect.get(index));
     }
 
     @Override
     public String getPrintableResult() {
-        final Optional<CodeLineByOccurrence> mostOftenCodeLine = getMeaningfulCodeLineByOccurrence(0);
+        final Optional<CodeLineByOccurrence> mostOftenCodeLine = indexOf(getMeaningfulCodeLineByOccurrences(1), 0);
         final String codeLineAppend = mostOftenCodeLine.map((codeLine) -> " (" + codeLine + ")").orElse("");
         return filename + ":" + getStuckThreadsCount() + codeLineAppend;
+    }
+
+    private <T> Optional<T> indexOf(List<T> list, int index) {
+        if (list.size() <= index) {
+            return Optional.empty();
+        }
+        return Optional.of(list.get(index));
+
     }
 }

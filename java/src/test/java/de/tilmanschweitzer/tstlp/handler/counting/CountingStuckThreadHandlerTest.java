@@ -29,21 +29,19 @@ class CountingStuckThreadHandlerTest {
     @Test
     @DisplayName("analyze parses the stack trace of one stuck thread")
     void analyze_parsesOneStackTrace() {
-        final String filename = "tomcat-logs/catalina.2022-06-05";
-        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, stuckThreadExampleWithOneStuckThread);
+        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile("tomcat-logs/catalina.2022-06-05", stuckThreadExampleWithOneStuckThread);
 
         abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
         final CountingLogFileParserResult result = countingStuckThreadHandler.getCountingResult();
-        assertEquals(filename, result.getFilename());
+        assertEquals(tomcatLogFile.getFilename(), result.getFilename());
         assertEquals(1, result.getStuckThreadsCount());
     }
 
     @Test
     @DisplayName("analyze parses the stack trace of multiple stuck threads")
     void analyze_parsesMultipleStackTraces() {
-        final String filename = "tomcat-logs/catalina.2022-06-06";
-        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, stuckThreadExampleWithMultipleStuckThreads);
+        final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile("tomcat-logs/catalina.2022-06-06", stuckThreadExampleWithMultipleStuckThreads);
 
         abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 

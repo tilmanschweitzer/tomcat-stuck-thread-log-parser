@@ -30,8 +30,8 @@ class CodeLineRankingStuckThreadHandlerTest {
     }
 
     @Test
-    @DisplayName("analyze parses the stack trace of one stuck thread")
-    void analyze_parsesOneStackTrace() {
+    @DisplayName("parseFile parses the stack trace of one stuck thread")
+    void parseFile_parsesOneStackTrace() {
         final String filename = "tomcat-logs/catalina.2022-06-05";
         final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, stuckThreadExampleWithOneStuckThread);
 
@@ -55,8 +55,8 @@ class CodeLineRankingStuckThreadHandlerTest {
     }
 
     @Test
-    @DisplayName("analyze parses the stack trace of multiple stuck threads")
-    void analyze_parsesMultipleStackTraces() {
+    @DisplayName("parseFile parses the stack trace of multiple stuck threads")
+    void parseFile_parsesMultipleStackTraces() {
         final String filename = "tomcat-logs/catalina.2022-06-06";
         final TomcatLogFile tomcatLogFile = new DummyTomcatLogFile(filename, stuckThreadExampleWithMultipleStuckThreads);
 
@@ -81,14 +81,18 @@ class CodeLineRankingStuckThreadHandlerTest {
 
         assertEquals(expectedTimestamps.toString(), result.getStuckThreads().stream().map(StuckThread::getTimestamp).collect(toList()).toString());
 
-        final CodeLineByOccurrence codeLineWithMostOccurrences = result.getCodeLineByOccurrence(0).get();
+        final CodeLineByOccurrence codeLineWithMostOccurrences = result.getCodeLineBy(1).get(0);
         assertEquals(414, codeLineWithMostOccurrences.getCount());
         assertEquals("org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", codeLineWithMostOccurrences.getLine());
 
 
-        final CodeLineByOccurrence meaningfulCodeLineWithMostOccurrences = result.getMeaningfulCodeLineByOccurrence(0).get();
+        final CodeLineByOccurrence meaningfulCodeLineWithMostOccurrences = result.getMeaningfulCodeLineByOccurrences(1).get(0);
         assertEquals(9, meaningfulCodeLineWithMostOccurrences.getCount());
         assertEquals("java.base@11.0.14.1/java.net.SocketInputStream.socketRead0(Native Method)", meaningfulCodeLineWithMostOccurrences.getLine());
 
+
+        final CodeLineByOccurrence highestWeightedCodeLines = result.getCodeLineBy(result::filterAmbiguousAndIgnoredCodeLines, CodeLineByOccurrence::compareToByWeight, 1).get(0);
+        assertEquals(9, highestWeightedCodeLines.getCount());
+        assertEquals("java.base@11.0.14.1/java.net.SocketInputStream.socketRead0(Native Method)", meaningfulCodeLineWithMostOccurrences.getLine());
     }
 }

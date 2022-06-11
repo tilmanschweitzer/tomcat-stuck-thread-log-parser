@@ -40,7 +40,7 @@ public class StuckThread {
         if (normalizedLine.isEmpty()) {
             return Optional.empty();
         }
-        final CodeLine newCodeLine = new CodeLine(normalizedLine, stackTrace.size(), this);
+        final CodeLine newCodeLine = new CodeLine(normalizedLine, stackTrace.size() + 1, this);
         stackTrace.add(newCodeLine);
         return Optional.of(newCodeLine);
     }
