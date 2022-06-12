@@ -10,7 +10,7 @@ public class StuckThread {
     private final String timestamp;
     private final List<CodeLine> stackTrace = new ArrayList<>();
 
-    public StuckThread(String timestamp) {
+    private StuckThread(String timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -21,6 +21,11 @@ public class StuckThread {
         }
         // ignore all other lines
         return "";
+    }
+
+    public static StuckThread fromLine(String line) {
+        final String timstamp = timestampFromStuckThreadsFirstLine(line);
+        return new StuckThread(timstamp);
     }
 
     public List<CodeLine> getStackTrace() {
@@ -40,8 +45,34 @@ public class StuckThread {
         if (normalizedLine.isEmpty()) {
             return Optional.empty();
         }
+        // Start to count code lines at 1 to avoid divide by zero errors
         final CodeLine newCodeLine = new CodeLine(normalizedLine, stackTrace.size() + 1, this);
         stackTrace.add(newCodeLine);
         return Optional.of(newCodeLine);
+    }
+
+    static String timestampFromStuckThreadsFirstLine(String line) {
+        final String[] splittedLine = line.split(" ");
+        return splittedLine[0] + " " + splittedLine[1];
+    }
+
+    public static class CodeLine {
+        final String line;
+        final int lineNumberInStuckThread;
+        final StuckThread stuckThread;
+
+        public CodeLine(String line, int lineNumberInStuckThread, StuckThread stuckThread) {
+            this.line = line;
+            this.lineNumberInStuckThread = lineNumberInStuckThread;
+            this.stuckThread = stuckThread;
+        }
+
+        public String getLine() {
+            return line;
+        }
+
+        public int getLineNumberInStuckThread() {
+            return lineNumberInStuckThread;
+        }
     }
 }

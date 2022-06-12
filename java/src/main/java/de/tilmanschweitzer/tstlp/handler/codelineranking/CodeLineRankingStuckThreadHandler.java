@@ -9,11 +9,6 @@ public class CodeLineRankingStuckThreadHandler implements StuckThreadHandler {
     private StuckThread currentStuckThread;
     private CodeLineRankingLogFileParserResult currentResult;
 
-    private static String timestampFromStuckThreadsFirstLine(String line) {
-        final String[] splittedLine = line.split(" ");
-        return splittedLine[0] + " " + splittedLine[1];
-    }
-
     @Override
     public void startLogFile(String filename) {
         currentResult = new CodeLineRankingLogFileParserResult(filename);
@@ -21,12 +16,12 @@ public class CodeLineRankingStuckThreadHandler implements StuckThreadHandler {
 
     @Override
     public void startStuckThread(String line) {
-        currentStuckThread = new StuckThread(timestampFromStuckThreadsFirstLine(line));
+        currentStuckThread = StuckThread.fromLine(line);
     }
 
     @Override
     public void lineInStuckThread(String line) {
-        final Optional<CodeLine> codeLine = currentStuckThread.addLineToStacktrace(line);
+        final Optional<StuckThread.CodeLine> codeLine = currentStuckThread.addLineToStacktrace(line);
         codeLine.ifPresent(currentResult::addCodeLine);
     }
 

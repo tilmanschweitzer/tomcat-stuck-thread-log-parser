@@ -37,7 +37,7 @@ public class AsyncTomcatLogParser extends AbstractTomcatLogParser implements Tom
                 System.out.println(resultFuture.get().getPrintableResult());
             }
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } finally {
             executorService.shutdown();
         }

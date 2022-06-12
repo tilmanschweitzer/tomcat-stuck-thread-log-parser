@@ -38,7 +38,7 @@ public class CodeLineRankingLogFileParserResult implements LogFileParserResult {
         return codeLineByOccurrencesMap.keySet().size();
     }
 
-    public void addCodeLine(CodeLine codeLine) {
+    public void addCodeLine(StuckThread.CodeLine codeLine) {
         final String line = codeLine.getLine();
         final CodeLineByOccurrence codeLineByOccurrence;
         if (codeLineByOccurrencesMap.containsKey(line)) {

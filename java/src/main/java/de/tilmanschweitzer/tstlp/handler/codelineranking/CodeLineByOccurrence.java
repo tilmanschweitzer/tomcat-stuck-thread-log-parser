@@ -35,7 +35,7 @@ public class CodeLineByOccurrence implements Comparable<CodeLineByOccurrence> {
             "org.springframework.aop.framework"
     );
     private final String line;
-    private final List<CodeLine> codeLines = new ArrayList<>();
+    private final List<StuckThread.CodeLine> codeLines = new ArrayList<>();
 
     public CodeLineByOccurrence(String line) {
         this.line = line;
@@ -53,11 +53,11 @@ public class CodeLineByOccurrence implements Comparable<CodeLineByOccurrence> {
         return codeLines.size();
     }
 
-    public List<CodeLine> getCodeLines() {
+    public List<StuckThread.CodeLine> getCodeLines() {
         return Collections.unmodifiableList(codeLines);
     }
 
-    public void addCodeLine(CodeLine codeLine) {
+    public void addCodeLine(StuckThread.CodeLine codeLine) {
         if (!codeLine.getLine().equals(line)) {
             throw new IllegalArgumentException("Code line must match the line in the CodeLineByOccurrence object");
         }
@@ -74,7 +74,7 @@ public class CodeLineByOccurrence implements Comparable<CodeLineByOccurrence> {
     }
 
     public int getAverageLineNumber() {
-        return getCodeLines().stream().map(CodeLine::getLineNumberInStuckThread).reduce(Integer::sum).orElseGet(() -> 0) / getCodeLines().size();
+        return getCodeLines().stream().map(StuckThread.CodeLine::getLineNumberInStuckThread).reduce(Integer::sum).orElseGet(() -> 0) / getCodeLines().size();
     }
 
     @Override
