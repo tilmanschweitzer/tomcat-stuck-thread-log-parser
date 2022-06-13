@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.tilmanschweitzer</groupId>
-    <artifactId>tomcat-stuck-thread-log-parser</artifactId>
+    <groupId>de.tilmanschweitzer.tstlp</groupId>
+    <artifactId>tstlp-core</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Tomcat Stuck Thread Log Parser</name>
+    <name>Tomcat Stuck Thread Log Parser - Core</name>
     <url>https://github.com/tilmanschweitzer/100-days-of-code/</url>
 
     <properties>
@@ -24,20 +24,6 @@
                 <version>3.8.0</version>
                 <configuration>
                     <release>11</release>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>de.tilmanschweitzer.tstlp.shell.App</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
                 </configuration>
             </plugin>
             <plugin>
@@ -61,11 +47,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>de.tilmanschweitzer.tstlp</groupId>
-            <artifactId>tstlp-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
