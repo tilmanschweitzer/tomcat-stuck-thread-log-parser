@@ -1,6 +1,7 @@
 package de.tilmanschweitzer.tstlp.core.parser;
 
 import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
+import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResultHandler;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFile;
 
@@ -11,9 +12,11 @@ public abstract class AbstractTomcatLogParser implements TomcatLogParser {
     public static final String STUCK_THREAD_MARKER = "org.apache.catalina.valves.StuckThreadDetectionValve.notifyStuckThreadDetected";
 
     private final Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers;
+    protected final LogFileParserResultHandler resultHandler;
 
-    public AbstractTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers) {
+    public AbstractTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers, LogFileParserResultHandler resultHandler) {
         this.stuckThreadHandlerSuppliers = stuckThreadHandlerSuppliers;
+        this.resultHandler = resultHandler;
     }
 
     public LogFileParserResult parseFile(TomcatLogFile tomcatLogFile) {

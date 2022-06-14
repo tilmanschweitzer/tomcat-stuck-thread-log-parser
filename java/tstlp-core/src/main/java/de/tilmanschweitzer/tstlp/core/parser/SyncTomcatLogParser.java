@@ -1,6 +1,7 @@
 package de.tilmanschweitzer.tstlp.core.parser;
 
 import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
+import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResultHandler;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFile;
 import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFileProvider;
@@ -10,8 +11,8 @@ import java.util.stream.Stream;
 
 public class SyncTomcatLogParser extends AbstractTomcatLogParser implements TomcatLogParser {
 
-    public SyncTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers) {
-        super(stuckThreadHandlerSuppliers);
+    public SyncTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers, LogFileParserResultHandler resultHandler) {
+        super(stuckThreadHandlerSuppliers, resultHandler);
     }
 
     @Override
@@ -19,7 +20,7 @@ public class SyncTomcatLogParser extends AbstractTomcatLogParser implements Tomc
         try (Stream<TomcatLogFile> tomcatLogFiles = provider.provideLogFiles()) {
             tomcatLogFiles.forEach((tomcatLogFile) -> {
                 final LogFileParserResult logFileParserResult = parseFile(tomcatLogFile);
-                System.out.println(logFileParserResult.getPrintableResult());
+                resultHandler.handleResult(logFileParserResult);
             });
         }
     }

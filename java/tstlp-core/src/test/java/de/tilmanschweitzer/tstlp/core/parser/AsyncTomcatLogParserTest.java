@@ -37,8 +37,7 @@ class AsyncTomcatLogParserTest {
 
     @BeforeEach
     void beforeEach() {
-        asyncTomcatLogParser = new AsyncTomcatLogParser(() -> stuckThreadHandler);
-
+        asyncTomcatLogParser = new AsyncTomcatLogParser(() -> stuckThreadHandler, (result) -> { } );
     }
 
     @AfterEach

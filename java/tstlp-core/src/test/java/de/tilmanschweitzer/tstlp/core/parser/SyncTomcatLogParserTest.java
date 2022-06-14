@@ -41,8 +41,7 @@ class SyncTomcatLogParserTest {
 
     @BeforeEach
     void beforeEach() {
-        syncTomcatLogParser = new SyncTomcatLogParser(() -> stuckThreadHandler);
-
+        syncTomcatLogParser = new SyncTomcatLogParser(() -> stuckThreadHandler, (result) -> { } );
     }
 
     @AfterEach

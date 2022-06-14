@@ -1,5 +1,6 @@
 package de.tilmanschweitzer.tstlp.core.mock;
 
+import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResultHandler;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.core.parser.AbstractTomcatLogParser;
 import de.tilmanschweitzer.tstlp.core.parser.TomcatLogParser;
@@ -9,8 +10,8 @@ import java.util.function.Supplier;
 
 public class DummyTomcatLogParser extends AbstractTomcatLogParser implements TomcatLogParser {
 
-    public DummyTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers) {
-        super(stuckThreadHandlerSuppliers);
+    public DummyTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers, LogFileParserResultHandler resultHandler) {
+        super(stuckThreadHandlerSuppliers, resultHandler);
     }
 
     @Override

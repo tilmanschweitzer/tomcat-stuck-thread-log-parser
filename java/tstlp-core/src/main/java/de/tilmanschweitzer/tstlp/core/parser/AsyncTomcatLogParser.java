@@ -1,6 +1,7 @@
 package de.tilmanschweitzer.tstlp.core.parser;
 
 import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
+import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResultHandler;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFile;
 import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFileProvider;
@@ -16,8 +17,8 @@ import java.util.stream.Stream;
 
 public class AsyncTomcatLogParser extends AbstractTomcatLogParser implements TomcatLogParser {
 
-    public AsyncTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers) {
-        super(stuckThreadHandlerSuppliers);
+    public AsyncTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers, LogFileParserResultHandler logFileParserResultHandler) {
+        super(stuckThreadHandlerSuppliers, logFileParserResultHandler);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class AsyncTomcatLogParser extends AbstractTomcatLogParser implements Tom
                     }).collect(Collectors.toList());
 
             for (Future<LogFileParserResult> resultFuture : collect) {
-                System.out.println(resultFuture.get().getPrintableResult());
+                resultHandler.handleResult(resultFuture.get());
             }
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);

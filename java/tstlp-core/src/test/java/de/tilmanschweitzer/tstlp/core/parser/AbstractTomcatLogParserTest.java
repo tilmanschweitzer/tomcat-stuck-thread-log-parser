@@ -31,7 +31,7 @@ class AbstractTomcatLogParserTest {
 
     @BeforeEach
     void beforeEach() {
-        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> stuckThreadHandler);
+        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> stuckThreadHandler, (result) -> { });
     }
 
     @AfterEach

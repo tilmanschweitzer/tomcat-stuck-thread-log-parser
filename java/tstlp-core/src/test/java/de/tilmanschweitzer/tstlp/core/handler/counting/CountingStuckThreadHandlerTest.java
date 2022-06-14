@@ -23,7 +23,7 @@ class CountingStuckThreadHandlerTest {
     @BeforeEach
     void setUp() {
         countingStuckThreadHandler = new CountingStuckThreadHandler();
-        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> countingStuckThreadHandler);
+        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> countingStuckThreadHandler, result -> { } );
     }
 
     @Test

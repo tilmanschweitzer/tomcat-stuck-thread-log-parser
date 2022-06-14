@@ -26,7 +26,7 @@ class CodeLineRankingStuckThreadHandlerTest {
     @BeforeEach
     void setUp() {
         codeLineRankingStuckThreadHandler = new CodeLineRankingStuckThreadHandler();
-        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> codeLineRankingStuckThreadHandler);
+        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> codeLineRankingStuckThreadHandler, result -> { });
     }
 
     @Test
