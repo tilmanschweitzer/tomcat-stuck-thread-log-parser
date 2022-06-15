@@ -1,6 +1,5 @@
 package de.tilmanschweitzer.tstlp.core.parser;
 
-import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
 import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResultHandler;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFile;
@@ -15,9 +14,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AsyncTomcatLogParser extends AbstractTomcatLogParser implements TomcatLogParser {
+public class AsyncTomcatLogParser<T> extends AbstractTomcatLogParser<T> implements TomcatLogParser<T> {
 
-    public AsyncTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers, LogFileParserResultHandler logFileParserResultHandler) {
+    public AsyncTomcatLogParser(Supplier<StuckThreadHandler<T>> stuckThreadHandlerSuppliers, LogFileParserResultHandler<T> logFileParserResultHandler) {
         super(stuckThreadHandlerSuppliers, logFileParserResultHandler);
     }
 
@@ -27,14 +26,14 @@ public class AsyncTomcatLogParser extends AbstractTomcatLogParser implements Tom
         final ExecutorService executorService = Executors.newFixedThreadPool(threads);
 
         try (Stream<TomcatLogFile> tomcatLogfiles = provider.provideLogFiles()) {
-            final List<Future<LogFileParserResult>> collect = tomcatLogfiles
+            final List<Future<T>> collect = tomcatLogfiles
                     .map((tomcatLogFile) -> {
                         return executorService.submit(() -> {
                             return parseFile(tomcatLogFile);
                         });
                     }).collect(Collectors.toList());
 
-            for (Future<LogFileParserResult> resultFuture : collect) {
+            for (Future<T> resultFuture : collect) {
                 resultHandler.handleResult(resultFuture.get());
             }
         } catch (InterruptedException | ExecutionException e) {

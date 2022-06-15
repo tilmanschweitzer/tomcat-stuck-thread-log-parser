@@ -1,10 +1,9 @@
 package de.tilmanschweitzer.tstlp.core.handler.counting;
 
-import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandlerAdapter;
 
-public class CountingStuckThreadHandler extends StuckThreadHandlerAdapter implements StuckThreadHandler {
+public class CountingStuckThreadHandler extends StuckThreadHandlerAdapter<CountingLogFileParserResult> implements StuckThreadHandler<CountingLogFileParserResult> {
 
     private String filename;
     private int stuckThreadsCounter;
@@ -21,11 +20,7 @@ public class CountingStuckThreadHandler extends StuckThreadHandlerAdapter implem
     }
 
     @Override
-    public LogFileParserResult getResult() {
-        return getCountingResult();
-    }
-
-    public CountingLogFileParserResult getCountingResult() {
+    public CountingLogFileParserResult getResult() {
         return new CountingLogFileParserResult(filename, stuckThreadsCounter);
     }
 }

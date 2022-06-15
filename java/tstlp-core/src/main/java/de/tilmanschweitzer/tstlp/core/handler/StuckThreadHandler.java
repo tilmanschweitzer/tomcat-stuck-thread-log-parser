@@ -1,6 +1,6 @@
 package de.tilmanschweitzer.tstlp.core.handler;
 
-public interface StuckThreadHandler {
+public interface StuckThreadHandler<T> {
 
     void startLogFile(String filename);
 
@@ -10,5 +10,5 @@ public interface StuckThreadHandler {
 
     void endStuckThread();
 
-    LogFileParserResult getResult();
+    T getResult();
 }

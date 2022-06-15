@@ -9,20 +9,18 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class CodeLineRankingLogFileParserResultTest {
 
     public static final List<String> stuckThreadExampleWithOneStuckThread = TestUtils.linesFromTomcatLogExamplesFile("example-with-one-stuck-thread.log");
     public static final List<String> stuckThreadExampleWithMultipleStuckThreads = TestUtils.linesFromTomcatLogExamplesFile("example-with-multiple-stuck-threads.log");
 
-    private TomcatLogParser abstractTomcatLogFolderParser;
+    private TomcatLogParser<CodeLineRankingLogFileParserResult> abstractTomcatLogFolderParser;
     private CodeLineRankingStuckThreadHandler codeLineRankingStuckThreadHandler;
 
     @BeforeEach
     void setUp() {
         codeLineRankingStuckThreadHandler = new CodeLineRankingStuckThreadHandler();
-        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> codeLineRankingStuckThreadHandler, result -> { });
+        abstractTomcatLogFolderParser = new DummyTomcatLogParser<>(() -> codeLineRankingStuckThreadHandler, result -> { });
     }
 
     @Test

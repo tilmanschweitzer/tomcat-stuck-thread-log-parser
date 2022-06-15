@@ -1,12 +1,10 @@
 package de.tilmanschweitzer.tstlp.core.handler.codelineranking;
 
-import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
-
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class CodeLineRankingLogFileParserResult implements LogFileParserResult {
+public class CodeLineRankingLogFileParserResult {
 
     final Map<String, CodeLineByOccurrence> codeLineByOccurrencesMap = new HashMap<>();
     private final String filename;
@@ -79,18 +77,4 @@ public class CodeLineRankingLogFileParserResult implements LogFileParserResult {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    @Override
-    public String getPrintableResult() {
-        final Optional<CodeLineByOccurrence> mostOftenCodeLine = indexOf(getMeaningfulCodeLineByOccurrences(1), 0);
-        final String codeLineAppend = mostOftenCodeLine.map((codeLine) -> " (" + codeLine + ")").orElse("");
-        return filename + ":" + getStuckThreadsCount() + codeLineAppend;
-    }
-
-    private <T> Optional<T> indexOf(List<T> list, int index) {
-        if (list.size() <= index) {
-            return Optional.empty();
-        }
-        return Optional.of(list.get(index));
-
-    }
 }

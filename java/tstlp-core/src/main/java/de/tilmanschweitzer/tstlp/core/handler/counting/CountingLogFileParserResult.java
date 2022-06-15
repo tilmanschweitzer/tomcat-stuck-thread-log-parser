@@ -1,8 +1,6 @@
 package de.tilmanschweitzer.tstlp.core.handler.counting;
 
-import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
-
-public class CountingLogFileParserResult implements LogFileParserResult {
+public class CountingLogFileParserResult {
 
     private final String filename;
     private final int stuckThreadsCount;
@@ -18,10 +16,5 @@ public class CountingLogFileParserResult implements LogFileParserResult {
 
     public int getStuckThreadsCount() {
         return stuckThreadsCount;
-    }
-
-    @Override
-    public String getPrintableResult() {
-        return filename + ":" + stuckThreadsCount;
     }
 }

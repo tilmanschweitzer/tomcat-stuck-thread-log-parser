@@ -20,7 +20,7 @@ class CodeLineRankingStuckThreadHandlerTest {
     public static final List<String> stuckThreadExampleWithOneStuckThread = linesFromTomcatLogExamplesFile("example-with-one-stuck-thread.log");
     public static final List<String> stuckThreadExampleWithMultipleStuckThreads = linesFromTomcatLogExamplesFile("example-with-multiple-stuck-threads.log");
 
-    private TomcatLogParser abstractTomcatLogFolderParser;
+    private TomcatLogParser<CodeLineRankingLogFileParserResult> abstractTomcatLogFolderParser;
     private CodeLineRankingStuckThreadHandler codeLineRankingStuckThreadHandler;
 
     @BeforeEach
@@ -36,7 +36,7 @@ class CodeLineRankingStuckThreadHandlerTest {
 
         abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
-        final CodeLineRankingLogFileParserResult result = codeLineRankingStuckThreadHandler.getCodeLineResult();
+        final CodeLineRankingLogFileParserResult result = codeLineRankingStuckThreadHandler.getResult();
         assertEquals(tomcatLogFile.getFilename(), result.getFilename());
         assertEquals(1, result.getStuckThreadsCount());
         assertEquals(4, result.uniqueCodeLinesCount());
@@ -60,7 +60,7 @@ class CodeLineRankingStuckThreadHandlerTest {
 
         abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
-        final CodeLineRankingLogFileParserResult result = codeLineRankingStuckThreadHandler.getCodeLineResult();
+        final CodeLineRankingLogFileParserResult result = codeLineRankingStuckThreadHandler.getResult();
 
         assertEquals(10, result.getStuckThreadsCount());
 

@@ -1,9 +1,8 @@
 package de.tilmanschweitzer.tstlp.core.handler.codelineranking;
 
-import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandler;
 
-public class CodeLineRankingStuckThreadHandler implements StuckThreadHandler {
+public class CodeLineRankingStuckThreadHandler implements StuckThreadHandler<CodeLineRankingLogFileParserResult> {
     private StuckThread currentStuckThread;
     private CodeLineRankingLogFileParserResult currentResult;
 
@@ -28,11 +27,8 @@ public class CodeLineRankingStuckThreadHandler implements StuckThreadHandler {
     }
 
     @Override
-    public LogFileParserResult getResult() {
+    public CodeLineRankingLogFileParserResult getResult() {
         return currentResult;
     }
 
-    public CodeLineRankingLogFileParserResult getCodeLineResult() {
-        return currentResult;
-    }
 }

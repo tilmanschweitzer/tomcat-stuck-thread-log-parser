@@ -8,9 +8,9 @@ import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFileProvider;
 
 import java.util.function.Supplier;
 
-public class DummyTomcatLogParser extends AbstractTomcatLogParser implements TomcatLogParser {
+public class DummyTomcatLogParser<T> extends AbstractTomcatLogParser<T> implements TomcatLogParser<T> {
 
-    public DummyTomcatLogParser(Supplier<StuckThreadHandler> stuckThreadHandlerSuppliers, LogFileParserResultHandler resultHandler) {
+    public DummyTomcatLogParser(Supplier<StuckThreadHandler<T>> stuckThreadHandlerSuppliers, LogFileParserResultHandler<T> resultHandler) {
         super(stuckThreadHandlerSuppliers, resultHandler);
     }
 

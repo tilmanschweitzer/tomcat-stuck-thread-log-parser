@@ -22,16 +22,16 @@ import static org.mockito.Mockito.*;
 class AbstractTomcatLogParserTest {
 
     @Mock
-    StuckThreadHandler stuckThreadHandler;
+    StuckThreadHandler<String> stuckThreadHandler;
 
     @Captor
     ArgumentCaptor<String> stringArgumentCaptor;
 
-    private TomcatLogParser abstractTomcatLogFolderParser;
+    private TomcatLogParser<String> abstractTomcatLogFolderParser;
 
     @BeforeEach
     void beforeEach() {
-        abstractTomcatLogFolderParser = new DummyTomcatLogParser(() -> stuckThreadHandler, (result) -> { });
+        abstractTomcatLogFolderParser = new DummyTomcatLogParser<>(() -> stuckThreadHandler, (result) -> { });
     }
 
     @AfterEach

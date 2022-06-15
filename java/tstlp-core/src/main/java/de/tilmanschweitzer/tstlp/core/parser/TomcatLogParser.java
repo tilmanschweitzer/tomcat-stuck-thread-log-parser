@@ -1,12 +1,11 @@
 package de.tilmanschweitzer.tstlp.core.parser;
 
-import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
 import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFile;
 import de.tilmanschweitzer.tstlp.core.parser.logfile.TomcatLogFileProvider;
 
-public interface TomcatLogParser {
+public interface TomcatLogParser<T> {
 
     void parse(TomcatLogFileProvider tomcatLogFileProvider);
 
-    LogFileParserResult parseFile(TomcatLogFile tomcatLogFile);
+    T parseFile(TomcatLogFile tomcatLogFile);
 }

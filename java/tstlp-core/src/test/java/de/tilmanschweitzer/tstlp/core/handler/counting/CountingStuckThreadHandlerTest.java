@@ -33,7 +33,7 @@ class CountingStuckThreadHandlerTest {
 
         abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
-        final CountingLogFileParserResult result = countingStuckThreadHandler.getCountingResult();
+        final CountingLogFileParserResult result = countingStuckThreadHandler.getResult();
         assertEquals(tomcatLogFile.getFilename(), result.getFilename());
         assertEquals(1, result.getStuckThreadsCount());
     }
@@ -45,7 +45,7 @@ class CountingStuckThreadHandlerTest {
 
         abstractTomcatLogFolderParser.parseFile(tomcatLogFile);
 
-        final CountingLogFileParserResult result = countingStuckThreadHandler.getCountingResult();
+        final CountingLogFileParserResult result = countingStuckThreadHandler.getResult();
 
         assertEquals(10, result.getStuckThreadsCount());
     }

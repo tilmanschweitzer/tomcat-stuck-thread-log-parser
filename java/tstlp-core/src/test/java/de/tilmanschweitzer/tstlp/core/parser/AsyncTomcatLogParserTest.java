@@ -1,6 +1,5 @@
 package de.tilmanschweitzer.tstlp.core.parser;
 
-import de.tilmanschweitzer.tstlp.core.handler.LogFileParserResult;
 import de.tilmanschweitzer.tstlp.core.handler.StuckThreadHandler;
 import de.tilmanschweitzer.tstlp.core.mock.DummyTomcatLogFile;
 import de.tilmanschweitzer.tstlp.core.mock.DummyTomcatLogFileProvider;
@@ -28,16 +27,16 @@ import static org.mockito.internal.util.collections.Sets.newSet;
 class AsyncTomcatLogParserTest {
 
     @Mock
-    StuckThreadHandler stuckThreadHandler;
+    StuckThreadHandler<CountingLogFileParserResult> stuckThreadHandler;
 
     @Captor
     ArgumentCaptor<String> stringArgumentCaptor;
 
-    private AsyncTomcatLogParser asyncTomcatLogParser;
+    private AsyncTomcatLogParser<CountingLogFileParserResult> asyncTomcatLogParser;
 
     @BeforeEach
     void beforeEach() {
-        asyncTomcatLogParser = new AsyncTomcatLogParser(() -> stuckThreadHandler, (result) -> { } );
+        asyncTomcatLogParser = new AsyncTomcatLogParser<>(() -> stuckThreadHandler, (result) -> { } );
     }
 
     @AfterEach
@@ -64,7 +63,7 @@ class AsyncTomcatLogParserTest {
         final List<String> testFilenames = Arrays.asList("test-file-1.log", "test-file-2.log", "test-file-3.log", "test-file-4.log");
         final List<TomcatLogFile> tomcatLogFiles = testFilenames.stream().map(filename -> new DummyTomcatLogFile(filename, singletonList(""))).collect(toList());
         final TomcatLogFileProvider provider = new DummyTomcatLogFileProvider(tomcatLogFiles);
-        when(stuckThreadHandler.getResult()).thenReturn(Mockito.mock(LogFileParserResult.class));
+        when(stuckThreadHandler.getResult()).thenReturn(Mockito.mock(CountingLogFileParserResult.class));
 
         asyncTomcatLogParser.parse(provider);
 

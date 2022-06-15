@@ -1,6 +1,6 @@
 package de.tilmanschweitzer.tstlp.core.handler;
 
-public class StuckThreadHandlerAdapter implements StuckThreadHandler {
+public abstract class StuckThreadHandlerAdapter<T> implements StuckThreadHandler<T> {
     @Override
     public void startLogFile(String filename) {
 
@@ -19,10 +19,5 @@ public class StuckThreadHandlerAdapter implements StuckThreadHandler {
     @Override
     public void endStuckThread() {
 
-    }
-
-    @Override
-    public LogFileParserResult getResult() {
-        return () -> "StuckThreadHandlerAdapter does not produce printable results";
     }
 }

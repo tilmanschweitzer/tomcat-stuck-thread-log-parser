@@ -1,5 +1,5 @@
 package de.tilmanschweitzer.tstlp.core.handler;
 
-public interface LogFileParserResultHandler {
-    void handleResult(LogFileParserResult result);
+public interface LogFileParserResultHandler<T> {
+    void handleResult(T result);
 }
