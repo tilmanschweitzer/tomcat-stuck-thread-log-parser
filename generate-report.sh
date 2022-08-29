@@ -1,15 +1,34 @@
 #!/usr/bin/env bash
 
 filename="count-stuck-threads.md"
-folder="tomcat-logs"
-subset_prefix="catalina.2022-01"
+folder=$1
+subset_prefix=$2
 subset_patterns="$folder/$subset_prefix*"
+
+
+function usage {
+    echo "Usage: $0 <folder> <subset_prefix>
+Example:  $0 ./tomcat-log-examples example-2022-06-0"
+}
+
+if ! [ -d "$folder" ]; then
+    echo "ERROR: Specify folder as first parameter"
+    echo
+    usage
+    exit 1
+fi
+
+if [ -z "$subset_prefix" ]; then
+    echo "ERROR: Specify subset_prefix as seconds parameter"
+    echo
+    usage
+    exit 1
+fi
 
 echo "# $filename
 
 > Runtime comparison of different ways to count the logs message \`notifyStuckThreadDetected\` in tomcat logs.
 " > $filename
-
 
 ## Add machine information (currently depending on MacOS)
 echo "## Environment
