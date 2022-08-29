@@ -71,8 +71,8 @@ load test_helper.bash
 
 # ===== Java tests =====
 
-@test "Command 'java -jar java/target/tomcat-stuck-thread-log-parser-*-SNAPSHOT-jar-with-dependencies.jar' parses example files as expected" {
-  run java -jar java/target/tomcat-stuck-thread-log-parser-1.0-SNAPSHOT-jar-with-dependencies.jar tomcat-log-examples/
+@test "Command 'java -jar java/cli/target/*-jar-with-dependencies.jar' parses example files as expected" {
+  run java -jar java/cli/target/*-jar-with-dependencies.jar tomcat-log-examples/
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "$output_line_1" ]
   [ "${lines[1]}" = "$output_line_2" ]
