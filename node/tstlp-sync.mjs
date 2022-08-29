@@ -8,5 +8,5 @@ const {folderName, fileNames} = fileNamesFromArgs();
 fileNames.forEach(filename => {
     const file = fs.readFileSync(`${folderName}/${filename}`, 'utf-8');
     const stuckThreads = countStringPerLine(file, STUCK_THREADS_DETECTED_LOG_MESSAGE)
-    console.log(`${filename}:${stuckThreads}`);
+    console.log(`${folderName}/${filename}:${stuckThreads}`);
 });

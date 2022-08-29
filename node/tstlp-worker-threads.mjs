@@ -23,7 +23,7 @@ if (isMainThread) {
 
     fileNames.forEach(filename => {
         workerThreadPool.dispatchMessage({
-            filename: `${folderName}${filename}`
+            filename: `${folderName}/${filename}`
         })
     })
 

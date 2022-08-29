@@ -10,7 +10,7 @@ async function readFiles(filenames) {
     for (const filename of filenames) {
         const file = await fsPromises.readFile(`${folderName}/${filename}`, 'utf-8');
         const stuckThreads = countStringPerLine(file, STUCK_THREADS_DETECTED_LOG_MESSAGE);
-        console.log(`${filename}:${stuckThreads}`);
+        console.log(`${folderName}/${filename}:${stuckThreads}`);
     }
 }
 

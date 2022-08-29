@@ -3,7 +3,7 @@ import fs from "fs";
 function fileNamesFromArgs() {
     const args = process.argv.slice(2);
 
-    const folderName = args[0];
+    const folderName = replaceTrailingSlash(args[0]);
     const startsWith = args[1] || "";
 
     if (!fs.existsSync(folderName)) {
@@ -23,6 +23,13 @@ function fileNamesFromArgs() {
         startsWith,
         fileNames
     }
+}
+
+function replaceTrailingSlash(folderName) {
+    if (!folderName.endsWith("/")) {
+        return folderName;
+    }
+    return folderName.slice(0, folderName.length - 1);
 }
 
 export {fileNamesFromArgs}

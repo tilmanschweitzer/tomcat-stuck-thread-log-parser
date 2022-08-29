@@ -10,6 +10,7 @@ const readFilePromises = fileNames.map(filename => {
     return fsPromises.readFile(`${folderName}/${filename}`, 'utf-8').then(file => {
         const stuckThreads = countStringPerLine(file, STUCK_THREADS_DETECTED_LOG_MESSAGE);
         return {
+            folderName,
             filename,
             stuckThreads
         }
@@ -27,5 +28,5 @@ function resolvePromisesInSequence(promises, callback) {
 }
 
 resolvePromisesInSequence(readFilePromises, (result) => {
-    console.log(`${result.filename}:${result.stuckThreads}`);
+    console.log(`${result.folderName}/${result.filename}:${result.stuckThreads}`);
 });
