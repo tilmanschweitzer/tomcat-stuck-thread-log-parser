@@ -1,7 +1,7 @@
 import sys
 import os
 
-folder = sys.argv[1]
+folder = sys.argv[1].strip("/")
 
 filenames = []
 
@@ -15,7 +15,8 @@ filenames.sort()
 
 for filename in filenames:
     counter = 0
-    with open(folder + filename) as file:
+    path = folder + "/" + filename
+    with open(path) as file:
         line = file.readline()
 
         while line:
@@ -23,4 +24,4 @@ for filename in filenames:
                 counter += 1
             line = file.readline()
 
-        print(filename + ":" + str(counter))
+        print(path + ":" + str(counter))

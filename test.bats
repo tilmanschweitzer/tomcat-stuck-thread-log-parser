@@ -117,7 +117,7 @@ load test_helper.bash
 
 # ===== Node.js tests =====
 
-@test "Command 'node/tstlp-worker-threads.mjs' parses example files as expected" {
+@test "Command 'node node/tstlp-worker-threads.mjs' parses example files as expected" {
   run node node/tstlp-worker-threads.mjs tomcat-log-examples/
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "$output_line_1" ]
@@ -139,7 +139,7 @@ load test_helper.bash
   [ "${lines[16]}" = "$output_line_17" ]
 }
 
-@test "Command 'node/tstlp-async-await.mjs' parses example files as expected" {
+@test "Command 'node node/tstlp-async-await.mjs' parses example files as expected" {
   run node node/tstlp-async-await.mjs tomcat-log-examples/
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "$output_line_1" ]
@@ -161,7 +161,7 @@ load test_helper.bash
   [ "${lines[16]}" = "$output_line_17" ]
 }
 
-@test "Command 'node/tstlp-parallel.mjs' parses example files as expected" {
+@test "Command 'node node/tstlp-parallel.mjs' parses example files as expected" {
   run node node/tstlp-parallel.mjs tomcat-log-examples/
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "$output_line_1" ]
@@ -183,7 +183,7 @@ load test_helper.bash
   [ "${lines[16]}" = "$output_line_17" ]
 }
 
-@test "Command 'node/tstlp-promise-all.mjs' parses example files as expected" {
+@test "Command 'node node/tstlp-promise-all.mjs' parses example files as expected" {
   run node node/tstlp-promise-all.mjs tomcat-log-examples/
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "$output_line_1" ]
@@ -205,8 +205,54 @@ load test_helper.bash
   [ "${lines[16]}" = "$output_line_17" ]
 }
 
-@test "Command 'node/tstlp-sync.mjs' parses example files as expected" {
+@test "Command 'node node/tstlp-sync.mjs' parses example files as expected" {
   run node node/tstlp-sync.mjs tomcat-log-examples/
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "$output_line_1" ]
+  [ "${lines[1]}" = "$output_line_2" ]
+  [ "${lines[2]}" = "$output_line_3" ]
+  [ "${lines[3]}" = "$output_line_4" ]
+  [ "${lines[4]}" = "$output_line_5" ]
+  [ "${lines[5]}" = "$output_line_6" ]
+  [ "${lines[6]}" = "$output_line_7" ]
+  [ "${lines[7]}" = "$output_line_8" ]
+  [ "${lines[8]}" = "$output_line_9" ]
+  [ "${lines[9]}" = "$output_line_10" ]
+  [ "${lines[10]}" = "$output_line_11" ]
+  [ "${lines[11]}" = "$output_line_12" ]
+  [ "${lines[12]}" = "$output_line_13" ]
+  [ "${lines[13]}" = "$output_line_14" ]
+  [ "${lines[14]}" = "$output_line_15" ]
+  [ "${lines[15]}" = "$output_line_16" ]
+  [ "${lines[16]}" = "$output_line_17" ]
+}
+
+# ===== Python tests =====
+
+@test "Command 'python3 python/tstlp-sync.py' parses example files as expected" {
+  run python3 python/tstlp-sync.py tomcat-log-examples/
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "$output_line_1" ]
+  [ "${lines[1]}" = "$output_line_2" ]
+  [ "${lines[2]}" = "$output_line_3" ]
+  [ "${lines[3]}" = "$output_line_4" ]
+  [ "${lines[4]}" = "$output_line_5" ]
+  [ "${lines[5]}" = "$output_line_6" ]
+  [ "${lines[6]}" = "$output_line_7" ]
+  [ "${lines[7]}" = "$output_line_8" ]
+  [ "${lines[8]}" = "$output_line_9" ]
+  [ "${lines[9]}" = "$output_line_10" ]
+  [ "${lines[10]}" = "$output_line_11" ]
+  [ "${lines[11]}" = "$output_line_12" ]
+  [ "${lines[12]}" = "$output_line_13" ]
+  [ "${lines[13]}" = "$output_line_14" ]
+  [ "${lines[14]}" = "$output_line_15" ]
+  [ "${lines[15]}" = "$output_line_16" ]
+  [ "${lines[16]}" = "$output_line_17" ]
+}
+
+@test "Command 'python3 python/tstlp-script.py' parses example files as expected" {
+  run python3 python/tstlp-script.py tomcat-log-examples/
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "$output_line_1" ]
   [ "${lines[1]}" = "$output_line_2" ]

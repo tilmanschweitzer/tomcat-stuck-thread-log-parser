@@ -28,10 +28,11 @@ def count_string_in_file(path, s):
 
 
 def main():
-    folder = sys.argv[1]
+    folder = sys.argv[1].strip("/")
 
     for filename in filenames_from_folder(folder):
-        stuckThreadCounter = count_string_in_file(folder + filename, "notifyStuckThreadDetected")
-        print(filename + ":" + str(stuckThreadCounter))
+        path = folder + "/" + filename;
+        stuckThreadCounter = count_string_in_file(path, "notifyStuckThreadDetected")
+        print(path + ":" + str(stuckThreadCounter))
 
 main()
