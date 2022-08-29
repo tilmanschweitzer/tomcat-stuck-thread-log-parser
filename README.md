@@ -19,3 +19,13 @@ Run tests
 
 The example reports in [count-stuck-threads.md](count-stuck-threads.md) was generated with a private 5 GB dataset which is not attached to the repository for several reasons.
 
+## Usage for Java CLI
+
+
+    cd java
+
+    # Count stuck threads per line (async)
+    ./build-and-run.sh ../tomcat-logs/ --async
+
+    # Show most common codeline per file
+    ./build-and-run.sh ../tomcat-logs/ --analyze-code-line-occurrences
