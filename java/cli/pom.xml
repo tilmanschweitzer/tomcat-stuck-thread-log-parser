@@ -75,8 +75,8 @@
     <dependencies>
         <dependency>
             <groupId>de.tilmanschweitzer.tstlp</groupId>
-            <artifactId>tstlp-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>core</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
