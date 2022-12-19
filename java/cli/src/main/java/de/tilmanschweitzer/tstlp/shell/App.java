@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class App {
 
@@ -46,13 +47,14 @@ public class App {
     }
 
     public static void printResult(CountingLogFileParserResult result) {
-        System.out.println(result.getFilename() + ":" + result.getStuckThreadsCount());
+        System.out.println(result.getFilename() + ":" + result.getStuckThreadsCount() + "\n");
     }
 
     public static void printResult(CodeLineRankingLogFileParserResult result) {
-        final Optional<CodeLineByOccurrence> mostOftenCodeLine = indexOf(result.getMeaningfulCodeLineByOccurrences(1), 0);
-        final String codeLineAppend = mostOftenCodeLine.map((codeLine) -> " (" + codeLine + ")").orElse("");
-        System.out.println(result.getFilename() + ":" + result.getStuckThreadsCount() + codeLineAppend);
+        final List<CodeLineByOccurrence> meaningfulCodeLineByOccurrences = result.getMeaningfulCodeLineByOccurrences(150);
+        final String codeLineAppend = meaningfulCodeLineByOccurrences.stream().map((codeLine) -> " (" + codeLine + ")").collect(Collectors.joining("\n"));
+
+        System.out.println(result.getFilename() + ":" + result.getStuckThreadsCount() + codeLineAppend + "\n");
     }
 
     private static <T> Optional<T> indexOf(List<T> list, int index) {
